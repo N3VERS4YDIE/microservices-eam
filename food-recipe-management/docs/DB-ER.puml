@@ -1,0 +1,134 @@
+@startuml DB-ER
+
+entity "users" {
+  + id: INT [PK]
+  --
+  username: VARCHAR(50)
+  email: VARCHAR(100)
+  password_hash: VARCHAR(255)
+  profile_picture: VARCHAR(255)
+  role_id: INT [FK]
+  family_group_id: INT [FK]
+}
+
+entity "roles" {
+  + id: INT [PK]
+  --
+  role_name: VARCHAR(50)
+}
+
+entity "family_groups" {
+  + id: INT [PK]
+  --
+  name: VARCHAR(100)
+}
+
+entity "recipes" {
+  + id: INT [PK]
+  --
+  user_id: INT [FK]
+  title: VARCHAR(255)
+  description: TEXT
+  difficulty_id: INT [FK]
+  preparation_time: INT
+  is_public: BOOLEAN
+}
+
+entity "difficulties" {
+  + id: INT [PK]
+  --
+  difficulty_level: VARCHAR(50)
+}
+
+entity "ingredients" {
+  + id: INT [PK]
+  --
+  name: VARCHAR(100)
+  unit_id: INT [FK]
+}
+
+entity "units" {
+  + id: INT [PK]
+  --
+  unit_name: VARCHAR(50)
+}
+
+entity "recipe_ingredients" {
+  + recipe_id: INT [PK, FK]
+  + ingredient_id: INT [PK, FK]
+  --
+  quantity: DECIMAL(10,2)
+}
+
+entity "menus" {
+  + id: INT [PK]
+  --
+  user_id: INT [FK]
+  title: VARCHAR(255)
+  start_date: DATE
+  end_date: DATE
+}
+
+entity "meal_types" {
+  + id: INT [PK]
+  --
+  meal_type: VARCHAR(50)
+}
+
+entity "menu_recipes" {
+  + menu_id: INT [PK, FK]
+  + recipe_id: INT [PK, FK]
+  + meal_type_id: INT [FK]
+  + day: DATE
+}
+
+entity "shopping_lists" {
+  + id: INT [PK]
+  --
+  user_id: INT [FK]
+  created_at: TIMESTAMP
+}
+
+entity "shopping_list_items" {
+  + list_id: INT [PK, FK]
+  + ingredient_id: INT [PK, FK]
+  --
+  quantity: DECIMAL(10,2)
+  is_purchased: BOOLEAN
+}
+
+entity "pantries" {
+  + id: INT [PK]
+  --
+  user_id: INT [FK]
+  ingredient_id: INT [FK]
+  quantity: DECIMAL(10,2)
+  expiration_date: DATE
+}
+
+entity "recipe_suggestions" {
+  + user_id: INT [PK, FK]
+  + recipe_id: INT [PK, FK]
+  --
+  missing_ingredients_count: INT
+  is_favorite: BOOLEAN
+}
+
+users ||--o{ roles
+users ||--o{ family_groups
+users ||--o{ recipes
+recipes ||--o{ difficulties
+recipes ||--o{ recipe_ingredients
+recipe_ingredients ||--o{ ingredients
+ingredients ||--o{ units
+menus ||--o{ users
+menu_recipes ||--o{ menus
+menu_recipes ||--o{ recipes
+menu_recipes ||--o{ meal_types
+shopping_lists ||--o{ users
+shopping_list_items ||--o{ shopping_lists
+shopping_list_items ||--o{ ingredients
+pantries ||--o{ users
+pantries ||--o{ ingredients
+recipe_suggestions ||--o{ users
+recipe_suggestions ||--o{ recipes
