@@ -1,0 +1,18 @@
+org: n3vers4ydie
+app: christmas-tree
+service: christmas-tree-api
+
+provider:
+  name: aws
+  runtime: python3.12
+
+functions:
+  tree:
+    handler: handler.tree
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+plugins:
+  - serverless-offline
